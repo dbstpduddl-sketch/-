@@ -44,16 +44,13 @@ elif st.session_state.page == 'shop':
         cols = st.columns([1, 2])
 
         with cols[0]:
-            try:
-                st.image(row['image_url'], width=120)
-            except:
-                st.write("(이미지 로드 불가)")
+            st.image(row['image_url'], width=120)
 
         with cols[1]:
             st.write(f"**{row['name']}**")
             st.write(f"가격: {row['price']}원")
 
-            if st.button(f"장바구니 담기_{i}"):
+            if st.button(f"장바구니 담기 {i}"):
                 if row['price'] + sum(item['price'] for item in st.session_state.cart) <= st.session_state.budget:
                     st.session_state.cart.append(row.to_dict())
                     st.success("장바구니에 담겼습니다!")
@@ -82,7 +79,7 @@ elif st.session_state.page == 'result':
     reason = st.text_area("구매 이유를 작성하세요:")
 
     if st.button("제출하기"):
-        st.success("제출되었습니다! (실제 앱에서는 PNG로 저장 기능이 구현됨)")
+        st.success("제출되었습니다! (실제 앱에서는 PNG 저장 기능 구현 가능)")
 ```
 
 # requirements.txt
