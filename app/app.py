@@ -1,10 +1,15 @@
 import streamlit as st
 import pandas as pd
+import os
 
-# Load product data
+# Load product data safely
 @st.cache_data
 def load_products():
-    return pd.read_csv("products.csv")
+    file_path = "products.csv"
+    if not os.path.exists(file_path):
+        st.error("❌ 'products.csv' 파일을 찾을 수 없습니다.\n업로드 또는 파일 위치를 확인하세요.")
+        return pd.DataFrame(columns=["name", "price", "image_url"])
+    return pd.read_csv(file_path)
 
 # Initialize session state
 if 'page' not in st.session_state:
@@ -14,7 +19,7 @@ if 'budget' not in st.session_state:
 if 'cart' not in st.session_state:
     st.session_state.cart = []
 
-# Move to another page
+# Page navigation
 def go_to(page):
     st.session_state.page = page
 
@@ -39,6 +44,11 @@ elif st.session_state.page == 'shop':
     st.write(f"선택한 예산: **{st.session_state.budget}원**")
 
     products = load_products()
+
+    # 파일이 비어 있거나 로드 실패 시 멈추도록 처리
+    if products.empty:
+        st.warning("상품 데이터가 없습니다. 'products.csv' 파일을 확인하세요.")
+        st.stop()
 
     for i, row in products.iterrows():
         cols = st.columns([1, 2])
